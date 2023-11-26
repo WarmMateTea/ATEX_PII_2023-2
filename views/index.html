@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../extra-styles.css":>
+
+    <title>Hello, the world!</title>
+  </head>
+  <body>
+    <div style="min-height: 100vh; min-width: 100vw; color: #252531; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+
+      <div class="w-auto h-auto shadow-md rounded-md flex flex-col align-middle space-y-8 overflow-clip bg-white transition-all duration-500 ease-in-out" >
+          
+        <div class="px-8 pb-12 py-8 h-fit w-full bg-[#252531] ">
+          <h1 class="text-6xl font-bold text-white">GPT4Education</h1>
+          <p class="text-sm text-slate-400 font-extralight italic">
+            By Mateus Hirata, Luigi Erucci and Jhônatas Tomaz<br>
+            AtEx & PII 2023/2
+          </p>
+        </div>
+
+        <div class="px-7 py-3 transition-all duration-500 ease-in-out">
+          <span class="font-semibold text-lg max-w-[80%]">
+            1. Insira as informações da disciplina<br>
+            2. Insira o campo a que a disciplina pertence<br>
+            3. Clique em Gerar para gerar o prompt<br><br>
+          </span>
+
+          <!-- field & label container -->
+          <div class="flex flex-row space-x-1 mb-3 ">
+  
+            <!-- ^ campo: disciplina -->
+            <div class="flex flex-col">
+              <label>Disciplina do Plano de Ensino</label>
+              <input placeholder="Disciplina" id="inputDisciplina" 
+              class="focus:shadow-inner transition-all outline-slate-400 shadow-md px-4 py-2.5 h-fit w-80 rounded-md border-[#EAEBEF] text-[#252531]" type="text">
+            </div>
+            
+            <!-- ^ campo: campo da disciplina -->
+            <div class="flex flex-col">
+              <label>Campo da Disciplina</label>
+              <input placeholder="Campo" id="inputCurso" 
+              class="shadow-md px-4 py-2.5 h-fit w-80 outline-slate-400 rounded-md border-[#EAEBEF] text-[#252531]" type="text">
+            </div>
+            
+          </div>
+  
+            
+  
+          <!-- ^ botões -->
+          <div class="flex flex-row justify-between min-w-[300px] space-x-1">
+            <div>
+              <button id="generateBtn" 
+              class="transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">Gerar</button>
+  
+              <a href="https://chat.openai.com/" >
+                <button class="hover:no-underline transition-all px-4 py-1.5 h-fit rounded-md bg-white border-2 border-[#FF3A67] hover:border-[#FF89A4] text-[#FF3A67] hover:text-[#FF89A4] font-semibold" >ChatGPT</button>
+              </a>
+            </div>
+            
+            <div class="flex justify-end self-stretch place-self-stretch stre">
+              <button id="resetBtn"
+              class="transition-all px-4 py-1.5 h-fit rounded-md text-[#FF3A67] hover:text-[#FF89A4] font-semibold">Reset</button>
+            </div>
+          </div>
+            
+          <!-- ^ output do prompt montado -->
+          <div id="grow" class="grow flex flex-col w-auto max-w-[640px] mt-2 transition-all duration-500 ease-in-out h-0">
+            <p id="output" class="hidden w-full p-3 rounded-md bg-white border-2 border-[#EAEBEF] text=[#252531] text-[#252531] font-normal h-auto"></p>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script>
+      var disciplinaInput;
+      var cursoInput;
+      var promptObj;
+
+      window.onload = () =>  {
+        disciplinaInput = document.getElementById('inputDisciplina');
+        cursoInput = document.getElementById('inputCurso');
+        promptObj = document.getElementById('output');
+
+        document.getElementById('generateBtn').addEventListener("click", generatePrompt);
+        document.getElementById('resetBtn').addEventListener("click", resetFields);
+      };
+
+      // Funcionalidade 'Gerar prompt'
+      function generatePrompt() {
+        const baseStr = "Considerando os elementos abaixo, crie um plano de ensino para [disciplina] voltado para produção de artigos científicos na área de [curso]. Elementos:\n- Ementa\n- Objetivos\n- Bibliografia básica\n- Bibliografia complementar";
+
+        disciplinaStr = disciplinaInput.value;
+        cursoStr = cursoInput.value;
+
+        if (disciplinaStr.length == 0 || cursoStr.length == 0 ) {
+            // TODO disparar erro no campo, deixar vermelhinho e tal
+        } else {
+            baseStrOut = baseStr.replace("[disciplina]",disciplinaStr);
+            baseStrOut = baseStrOut.replace("[curso]",cursoStr);
+            promptObj.innerText = baseStrOut;
+            promptObj.classList.remove("hidden");
+            growDiv();
+        }
+      };
+
+      // Funcionalidade 'Limpar campos'
+      function resetFields() {
+        growDiv();
+        disciplinaInput.value = "";
+        cursoInput.value = "";
+        promptObj.innerText = "";
+        promptObj.classList.add("hidden")
+      };
+
+      function growDiv() {
+        var growDiv = document.getElementById('grow');
+        if (growDiv.clientHeight) {
+          growDiv.style.height = 0;
+        } else {
+          var wrapper = document.getElementById('output');
+          growDiv.style.height = wrapper.clientHeight + "px";
+        }
+      };
+
+    </script>
+  </body>
+</html>
