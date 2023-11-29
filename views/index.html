@@ -15,7 +15,7 @@
   <body>
     <div style="min-height: 100vh; min-width: 100vw; color: #252531; display: flex; flex-direction: column; justify-content: center; align-items: center;">
 
-      <div class="w-auto h-auto shadow-md rounded-md flex flex-col align-middle space-y-8 overflow-clip bg-white transition-all duration-500 ease-in-out" >
+      <div class="max-w-4xl w-auto h-auto shadow-md rounded-md flex flex-col align-middle space-y-8 overflow-clip bg-white transition-all duration-500 ease-in-out" >
           
         <div class="px-8 pb-12 py-8 h-fit w-full bg-[#252531] ">
           <h1 class="text-6xl font-bold text-white">GPT4Education</h1>
@@ -31,6 +31,23 @@
             2. Insira o campo a que a disciplina pertence<br>
             3. Clique em Gerar para gerar o prompt<br><br>
           </span>
+
+          <div class="hidden">
+            <button class="min-w-full mb-2 space-x-1 bg-slate-100 p-2 rounded-md text-slate-600 font-semibold">Opções Avançadas</button> 
+          <div id="opcoesAvancadas" class=" flex flex-col p-4 rounded-sm bg-slate-200">
+            <div>Número de referências<input id="qtdReferencias" type="number"></div>
+            <button class="px-4 py-2 text-slate-700 bg-slate-100" id="perguntasButton">Questões</button>
+            <div id="perguntasSection">
+              Quantidade de perguntas: <input type="number">
+              Tipo de perguntas:
+              <input type="checkbox">Dissertativas
+              <input type="checkbox">Múltipla Escolha
+              <input type="checkbox">Verdadeiro ou Falso
+            </div> 
+
+          </div>
+          </div>
+          
 
           <!-- field & label container -->
           <div class="flex flex-row space-x-1 mb-3 ">
@@ -51,7 +68,43 @@
             
           </div>
   
-            
+          <!-- * Contêiner das interações [usuário <-> GPT] -->
+          <div id="output" class="flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF]">
+
+            <!-- ^ Contêiner do dialog do usuário  -->
+            <div class="min-w-max flex flex-col items-end">
+              <!-- & img redondinha do usuário-->
+              <div class="rounded-full w-10 h-10 mb-2 bg-red-700">
+                <img class="object-scale-down" src="">
+              </div>
+              <!-- ? aqui vai o texto :D -->
+              <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
+                <p>
+
+                </p>
+              </div>
+            </div>
+
+            <!-- ^ Contêiner das respostas do GPT  -->
+            <div class="min-w-max flex flex-col items-start">
+              <!-- & img redondinha do gpt-->
+              <div class="rounded-full w-10 h-10 mb-2">
+                <img class="object-scale-down" src="">
+              </div>
+              <!-- ? aqui vai o texto :D -->
+              <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
+                <p>
+
+                </p>
+              </div>
+            </div>
+
+            <!-- ! aqui tem que ficar a parte de interação pré-programada. como fazer???????????????????????????????????????????/ freire ajuda um infeliz pf -->
+            <div>
+
+            </div>
+
+          </div>
   
           <!-- ^ botões -->
           <div class="flex flex-row justify-between min-w-[300px] space-x-1">
@@ -62,9 +115,13 @@
               <a href="https://chat.openai.com/" >
                 <button class="hover:no-underline transition-all px-4 py-1.5 h-fit rounded-md bg-white border-2 border-[#FF3A67] hover:border-[#FF89A4] text-[#FF3A67] hover:text-[#FF89A4] font-semibold" >ChatGPT</button>
               </a>
+
+              <button id="copyBtn" class="hidden transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">
+                Copiar
+              </button>
             </div>
             
-            <div class="flex justify-end self-stretch place-self-stretch stre">
+            <div  class="flex justify-end self-stretch place-self-stretch stre">
               <button id="resetBtn"
               class="transition-all px-4 py-1.5 h-fit rounded-md text-[#FF3A67] hover:text-[#FF89A4] font-semibold">Reset</button>
             </div>
@@ -89,14 +146,18 @@
       var disciplinaInput;
       var cursoInput;
       var promptObj;
+      var copyBtn;
+      var lastDiv;
 
       window.onload = () =>  {
         disciplinaInput = document.getElementById('inputDisciplina');
         cursoInput = document.getElementById('inputCurso');
         promptObj = document.getElementById('output');
+        copyBtn = document.getElementById('copyBtn');
 
         document.getElementById('generateBtn').addEventListener("click", generatePrompt);
         document.getElementById('resetBtn').addEventListener("click", resetFields);
+        copyBtn.addEventListener("click", copyToClipboard);
       };
 
       // Funcionalidade 'Gerar prompt'
@@ -111,19 +172,62 @@
         } else {
             baseStrOut = baseStr.replace("[disciplina]",disciplinaStr);
             baseStrOut = baseStrOut.replace("[curso]",cursoStr);
-            promptObj.innerText = baseStrOut;
-            promptObj.classList.remove("hidden");
-            growDiv();
+            //promptObj.innerText = baseStrOut;
+            //promptObj.classList.remove("hidden");
+            //copyBtn.classList.remove("hidden");
+            shrinkDiv();  //TODO
+
+            fetchPrompt();  //TODO
+            generateFirstUserMessage(baseStrOut);
+            generateAssistantResponse(baseStrOut);
+
+            growDiv();  //TODO
         }
       };
 
-      // Funcionalidade 'Limpar campos'
+      function generateFirstUserMessage(userInput) {
+        parentDiv = document.getElementById('grow');
+        userMessageDiv = document.createElement('div');
+        userPfpWrapper = document.createElement('div');
+        userPfpImg = document.createElement('img');
+        userTextDiv = document.createElement('div');
+
+        // Como essa função só trata da primeira vez, daí colocar aqui e setar o lastDiv.. embora parando pra pensar acho que nem precisa
+        parentDiv.appendChild(userMessageDiv);
+        lastDiv = userMessageDiv;
+
+        // Wrapper da mensagem do usuário
+        userMessageDiv.setAttribute("id", "last");
+        userMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-end");
+        userMessageDiv.appendChild(userPfpWrapper);
+        userMessageDiv.appendChild(userTextDiv);
+
+        // Wrapper do redondo da pfp
+        userPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
+        userPfpWrapper.appendChild(userPfpImg);
+
+        // A imagem em si
+        userPfpImg.classList.add("object-scale-down");
+        userPfpIm.setAttribute("src","")
+
+        // A mensagem em si
+        userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
+        userMessageDiv.textContent(userInput);
+      };
+
+      // TODO
+      function generateAssistantResponse() {
+
+      };
+
+      // Funcionalidade 'Limpar campos' 
       function resetFields() {
         growDiv();
         disciplinaInput.value = "";
         cursoInput.value = "";
         promptObj.innerText = "";
         promptObj.classList.add("hidden")
+        copyBtn.classList.add("hidden");
       };
 
       function growDiv() {
@@ -131,11 +235,114 @@
         if (growDiv.clientHeight) {
           growDiv.style.height = 0;
         } else {
+          // <!-- ! ATENÇÃO: MODIFICAR O OUTPUT PRA OU SER UMA DIV CONTAINER, OU SER OUTRA COISA -->
           var wrapper = document.getElementById('output');
           growDiv.style.height = wrapper.clientHeight + "px";
         }
       };
 
+      // Funcionalidade 'Copiar o conteúdo'
+      function copyToClipboard() {
+        var element = promptObj;
+        // Seleciona o texto no elemento de saída
+        var range = document.createRange();
+        range.selectNode(element);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        
+        // Copia o texto para a área de transferência
+        document.execCommand("copy");
+
+        // Alerta ou feedback que o texto foi copiado (opcional)
+        alert("Texto copiado: " + element.innerText);
+      }
+
+      // <!-- ! ====================================== -->
+      // <!-- ! script interagindo com a api da openAI -->
+      // <!-- ! ====================================== -->
+      import {config} from "dotenv"
+      config()
+
+      import OpenAI from "openai"
+      const openai = new OpenAI({
+        apiKey: process.env.API_KEY,
+      });
+
+      // <!-- * Inicializar o assistente quando a página carregar -->
+      var returnObj = await initializeAssistant();
+      const assistant = returnObj.assistant;
+      const thread = returnObj.thread;
+
+      // acho que isso funciona? n manjo mt de JS 🍵
+      async function askQuestion(question) {
+        return new Promise((resolve, reject) => {
+          (answer) => resolve(answer);
+        })
+      }
+
+      // Inicializa o assistente (para assistant e thread serem globais no escopo da página)
+      async function initializeAssistant() {
+        try {
+          // Criar o asssitente
+          const _assistant = await openai.beta.assistants.create({
+            name: "Assistente para professores",
+            instructions: "Você faz o papel de um assistente para professores. Use dados reais e fontes com credibilidade.",
+            model: "gpt-3.5-turbo"
+          });
+
+          // Criar thread de trabalho
+          const _thread = await openai.beta.threads.create();
+        } catch (error) {
+          console.log(error);
+        } finally {
+          return {assistant: _assistant, thread: _thread}
+        }
+      }
+
+      // Comunicação com o chat. Recebe a pergunta, e retorna a resposta.
+      async function interaction(textInput) {
+        try {
+          // A pergunta é recebida pela função, vinda da página web
+          const userQuestion = textInput;
+
+          await openai.beta.threads.messages.create(thread.id, {
+            role: "user",
+            content: userQuestion,
+          });
+
+          // Com 'runs', esperar e recuperar a resposta do assistente
+          const run = await openai.beta.threads.runs.create(thread.id, {
+            assistant_id: assistant.id,
+          });
+
+          let runStatus = await openai.beta.threads.runs.retrieve(
+            thread.id,
+            run.id
+          );
+
+          // Checagem até que runStatus esteja completo
+          while (runStatus.status !== "completed") {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+          }
+
+          // Obter a última mensagem do assistente
+          const messages = await openai.beta.threads.messages.list(thread.id);
+
+          // Encontrar a última mensagem da 'run' atual
+          const lastMessageForRun = messages.data.filter(
+            (message) => message.run_id === run.id && message.role === "assistant"
+          ).pop();
+
+          // Encontrando uma mensagem do assistente, retornar o conteúdo
+          if (lastMessageForRun) {
+            return lastMessageForRun.content[0].text.value;
+          }
+          
+        } catch (error) {
+          console.log(error);
+        }
+      }
     </script>
   </body>
 </html>
