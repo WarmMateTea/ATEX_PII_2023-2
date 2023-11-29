@@ -1,39 +1,46 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../extra-styles.css":>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Hello, the world!</title>
-  </head>
-  <body>
-    <div style="min-height: 100vh; min-width: 100vw; color: #252531; display: flex; flex-direction: column; justify-content: center; align-items: center;">
 
-      <div class="max-w-4xl w-auto h-auto shadow-md rounded-md flex flex-col align-middle space-y-8 overflow-clip bg-white transition-all duration-500 ease-in-out" >
-          
-        <div class="px-8 pb-12 py-8 h-fit w-full bg-[#252531] ">
-          <h1 class="text-6xl font-bold text-white">GPT4Education</h1>
-          <p class="text-sm text-slate-400 font-extralight italic">
-            By Mateus Hirata, Luigi Erucci and Jhônatas Tomaz<br>
-            AtEx & PII 2023/2
-          </p>
-        </div>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../extra-styles.css" :>
 
-        <div class="px-7 py-3 transition-all duration-500 ease-in-out">
-          <span class="font-semibold text-lg max-w-[80%]">
-            1. Insira as informações da disciplina<br>
-            2. Insira o campo a que a disciplina pertence<br>
-            3. Clique em Gerar para gerar o prompt<br><br>
-          </span>
+  <title>Hello, the world!</title>
+</head>
 
-          <div class="hidden">
-            <button class="min-w-full mb-2 space-x-1 bg-slate-100 p-2 rounded-md text-slate-600 font-semibold">Opções Avançadas</button> 
+<body>
+  <div
+    style="min-height: 100vh; min-width: 100vw; color: #252531; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+
+    <div
+      class="max-w-4xl w-auto h-auto shadow-md rounded-md flex flex-col align-middle space-y-8 overflow-clip bg-white transition-all duration-500 ease-in-out">
+
+      <div class="px-8 pb-12 py-8 h-fit w-full bg-[#252531] ">
+        <h1 class="text-6xl font-bold text-white">GPT4Education</h1>
+        <p class="text-sm text-slate-400 font-extralight italic">
+          By Mateus Hirata, Luigi Erucci and Jhônatas Tomaz<br>
+          AtEx & PII 2023/2
+        </p>
+      </div>
+
+      <div class="px-7 py-3 transition-all duration-500 ease-in-out">
+        <span class="font-semibold text-lg max-w-[80%]">
+          1. Insira as informações da disciplina<br>
+          2. Insira o campo a que a disciplina pertence<br>
+          3. Clique em Gerar para gerar o prompt<br><br>
+        </span>
+
+        <div class="hidden">
+          <button class="min-w-full mb-2 space-x-1 bg-slate-100 p-2 rounded-md text-slate-600 font-semibold">Opções
+            Avançadas</button>
           <div id="opcoesAvancadas" class=" flex flex-col p-4 rounded-sm bg-slate-200">
             <div>Número de referências<input id="qtdReferencias" type="number"></div>
             <button class="px-4 py-2 text-slate-700 bg-slate-100" id="perguntasButton">Questões</button>
@@ -43,306 +50,261 @@
               <input type="checkbox">Dissertativas
               <input type="checkbox">Múltipla Escolha
               <input type="checkbox">Verdadeiro ou Falso
-            </div> 
-
-          </div>
-          </div>
-          
-
-          <!-- field & label container -->
-          <div class="flex flex-row space-x-1 mb-3 ">
-  
-            <!-- ^ campo: disciplina -->
-            <div class="flex flex-col">
-              <label>Disciplina do Plano de Ensino</label>
-              <input placeholder="Disciplina" id="inputDisciplina" 
-              class="focus:shadow-inner transition-all outline-slate-400 shadow-md px-4 py-2.5 h-fit w-80 rounded-md border-[#EAEBEF] text-[#252531]" type="text">
-            </div>
-            
-            <!-- ^ campo: campo da disciplina -->
-            <div class="flex flex-col">
-              <label>Campo da Disciplina</label>
-              <input placeholder="Campo" id="inputCurso" 
-              class="shadow-md px-4 py-2.5 h-fit w-80 outline-slate-400 rounded-md border-[#EAEBEF] text-[#252531]" type="text">
-            </div>
-            
-          </div>
-  
-          <!-- * Contêiner das interações [usuário <-> GPT] -->
-          <div id="output" class="flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF]">
-
-            <!-- ^ Contêiner do dialog do usuário  -->
-            <div class="min-w-max flex flex-col items-end">
-              <!-- & img redondinha do usuário-->
-              <div class="rounded-full w-10 h-10 mb-2 bg-red-700">
-                <img class="object-scale-down" src="">
-              </div>
-              <!-- ? aqui vai o texto :D -->
-              <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
-                <p>
-
-                </p>
-              </div>
             </div>
 
-            <!-- ^ Contêiner das respostas do GPT  -->
-            <div class="min-w-max flex flex-col items-start">
-              <!-- & img redondinha do gpt-->
-              <div class="rounded-full w-10 h-10 mb-2">
-                <img class="object-scale-down" src="">
-              </div>
-              <!-- ? aqui vai o texto :D -->
-              <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
-                <p>
-
-                </p>
-              </div>
-            </div>
-
-            <!-- ! aqui tem que ficar a parte de interação pré-programada. como fazer???????????????????????????????????????????/ freire ajuda um infeliz pf -->
-            <div>
-
-            </div>
-
-          </div>
-  
-          <!-- ^ botões -->
-          <div class="flex flex-row justify-between min-w-[300px] space-x-1">
-            <div>
-              <button id="generateBtn" 
-              class="transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">Gerar</button>
-  
-              <a href="https://chat.openai.com/" >
-                <button class="hover:no-underline transition-all px-4 py-1.5 h-fit rounded-md bg-white border-2 border-[#FF3A67] hover:border-[#FF89A4] text-[#FF3A67] hover:text-[#FF89A4] font-semibold" >ChatGPT</button>
-              </a>
-
-              <button id="copyBtn" class="hidden transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">
-                Copiar
-              </button>
-            </div>
-            
-            <div  class="flex justify-end self-stretch place-self-stretch stre">
-              <button id="resetBtn"
-              class="transition-all px-4 py-1.5 h-fit rounded-md text-[#FF3A67] hover:text-[#FF89A4] font-semibold">Reset</button>
-            </div>
-          </div>
-            
-          <!-- ^ output do prompt montado -->
-          <div id="grow" class="grow flex flex-col w-auto max-w-[640px] mt-2 transition-all duration-500 ease-in-out h-0">
-            <p id="output" class="hidden w-full p-3 rounded-md bg-white border-2 border-[#EAEBEF] text=[#252531] text-[#252531] font-normal h-auto"></p>
           </div>
         </div>
 
 
-      </div>
+        <!-- field & label container -->
+        <div class="flex flex-row space-x-1 mb-3 ">
+
+          <!-- ^ campo: disciplina -->
+          <div class="flex flex-col">
+            <label>Disciplina do Plano de Ensino</label>
+            <input placeholder="Disciplina" id="inputDisciplina"
+              class="focus:shadow-inner transition-all outline-slate-400 shadow-md px-4 py-2.5 h-fit w-80 rounded-md border-[#EAEBEF] text-[#252531]"
+              type="text">
+          </div>
+
+          <!-- ^ campo: campo da disciplina -->
+          <div class="flex flex-col">
+            <label>Campo da Disciplina</label>
+            <input placeholder="Campo" id="inputCurso"
+              class="shadow-md px-4 py-2.5 h-fit w-80 outline-slate-400 rounded-md border-[#EAEBEF] text-[#252531]"
+              type="text">
+          </div>
+
+        </div>
+
+        <!-- * Contêiner das interações [usuário <-> GPT] -->
+        <div id="output" class="flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF]">
+
+          <!-- ^ Contêiner do dialog do usuário  -->
+          <div class="min-w-max flex flex-col items-end">
+            <!-- & img redondinha do usuário-->
+            <div class="rounded-full w-10 h-10 mb-2 bg-red-700">
+              <img class="object-scale-down" src="">
+            </div>
+            <!-- ? aqui vai o texto :D -->
+            <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
+              <p>
+
+              </p>
+            </div>
+          </div>
+
+          <!-- ^ Contêiner das respostas do GPT  -->
+          <div class="min-w-max flex flex-col items-start">
+            <!-- & img redondinha do gpt-->
+            <div class="rounded-full w-10 h-10 mb-2">
+              <img class="object-scale-down" src="">
+            </div>
+            <!-- ? aqui vai o texto :D -->
+            <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
+              <p>
+
+              </p>
+            </div>
+          </div>
+
+          <!-- ! aqui tem que ficar a parte de interação pré-programada. como fazer???????????????????????????????????????????/ freire ajuda um infeliz pf -->
+          <div>
+
+          </div>
+
+        </div>
+
+        <!-- ^ botões -->
+        <div class="flex flex-row justify-between min-w-[300px] space-x-1">
+          <div>
+            <button id="generateBtn"
+              class="transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">Gerar</button>
+
+            <a href="https://chat.openai.com/">
+              <button
+                class="hover:no-underline transition-all px-4 py-1.5 h-fit rounded-md bg-white border-2 border-[#FF3A67] hover:border-[#FF89A4] text-[#FF3A67] hover:text-[#FF89A4] font-semibold">ChatGPT</button>
+            </a>
+
+            <button id="copyBtn"
+              class="hidden transition-all px-4 py-2 h-fit rounded-md bg-[#FF3A67] hover:bg-[#FF89A4] text-white font-semibold">
+              Copiar
+            </button>
+          </div>
+
+          <div class="flex justify-end self-stretch place-self-stretch stre">
+            <button id="resetBtn"
+              class="transition-all px-4 py-1.5 h-fit rounded-md text-[#FF3A67] hover:text-[#FF89A4] font-semibold">Reset</button>
+          </div>
+        </div>
+
+        <!-- ^ output do prompt montado -->
+        <div id="grow" class="grow flex flex-col w-auto max-w-[640px] mt-2 transition-all duration-500 ease-in-out h-0">
+          <div id="output" class="hidden flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF] overflow-y-scroll">
+        </div>
+
+
     </div>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script>
-      var disciplinaInput;
-      var cursoInput;
-      var promptObj;
-      var copyBtn;
-      var lastDiv;
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+  <script>
+    var disciplinaInput;
+    var cursoInput;
+    var promptObj;
+    var copyBtn;
+    var lastDiv;
 
-      window.onload = () =>  {
-        disciplinaInput = document.getElementById('inputDisciplina');
-        cursoInput = document.getElementById('inputCurso');
-        promptObj = document.getElementById('output');
-        copyBtn = document.getElementById('copyBtn');
+    window.onload = () => {
+      disciplinaInput = document.getElementById('inputDisciplina');
+      cursoInput = document.getElementById('inputCurso');
+      promptObj = document.getElementById('output');
+      copyBtn = document.getElementById('copyBtn');
 
-        document.getElementById('generateBtn').addEventListener("click", generatePrompt);
-        document.getElementById('resetBtn').addEventListener("click", resetFields);
-        copyBtn.addEventListener("click", copyToClipboard);
-      };
+      document.getElementById('generateBtn').addEventListener("click", generatePrompt);
+      document.getElementById('resetBtn').addEventListener("click", resetFields);
+      copyBtn.addEventListener("click", copyToClipboard);
+    };
 
-      // Funcionalidade 'Gerar prompt'
-      function generatePrompt() {
-        const baseStr = "Considerando os elementos abaixo, crie um plano de ensino para [disciplina] voltado para produção de artigos científicos na área de [curso]. Elementos:\n- Ementa\n- Objetivos\n- Bibliografia básica\n- Bibliografia complementar";
+    // Funcionalidade 'Gerar prompt'
+    async function generatePrompt() {
+      const baseStr = "Considerando os elementos abaixo, crie um plano de ensino para [disciplina] voltado para produção de artigos científicos na área de [curso]. Elementos:\n- Ementa\n- Objetivos\n- Bibliografia básica\n- Bibliografia complementar";
 
-        disciplinaStr = disciplinaInput.value;
-        cursoStr = cursoInput.value;
+      disciplinaStr = disciplinaInput.value;
+      cursoStr = cursoInput.value;
 
-        if (disciplinaStr.length == 0 || cursoStr.length == 0 ) {
-            // TODO disparar erro no campo, deixar vermelhinho e tal
-        } else {
-            baseStrOut = baseStr.replace("[disciplina]",disciplinaStr);
-            baseStrOut = baseStrOut.replace("[curso]",cursoStr);
-            //promptObj.innerText = baseStrOut;
-            //promptObj.classList.remove("hidden");
-            //copyBtn.classList.remove("hidden");
-            shrinkDiv();  //TODO
+      if (disciplinaStr.length == 0 || cursoStr.length == 0) {
+        // TODO disparar erro no campo, deixar vermelhinho e tal
+      } else {
+        baseStrOut = baseStr.replace("[disciplina]", disciplinaStr);
+        baseStrOut = baseStrOut.replace("[curso]", cursoStr);
 
-            fetchPrompt();  //TODO
-            generateFirstUserMessage(baseStrOut);
-            generateAssistantResponse(baseStrOut);
+        // <!-- * Comunicação mesmo tá aqui -->
+        response = await fetch("/processString", {
+          method: "POST",
+          body: JSON.stringify({baseStrOut}),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-            growDiv();  //TODO
-        }
-      };
+        // <!-- * Parte visual -->
+        generateUserMessage(baseStrOut);
+        generateAssistantResponse(response);
 
-      function generateFirstUserMessage(userInput) {
-        parentDiv = document.getElementById('grow');
-        userMessageDiv = document.createElement('div');
-        userPfpWrapper = document.createElement('div');
-        userPfpImg = document.createElement('img');
-        userTextDiv = document.createElement('div');
-
-        // Como essa função só trata da primeira vez, daí colocar aqui e setar o lastDiv.. embora parando pra pensar acho que nem precisa
-        parentDiv.appendChild(userMessageDiv);
-        lastDiv = userMessageDiv;
-
-        // Wrapper da mensagem do usuário
-        userMessageDiv.setAttribute("id", "last");
-        userMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-end");
-        userMessageDiv.appendChild(userPfpWrapper);
-        userMessageDiv.appendChild(userTextDiv);
-
-        // Wrapper do redondo da pfp
-        userPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
-        userPfpWrapper.appendChild(userPfpImg);
-
-        // A imagem em si
-        userPfpImg.classList.add("object-scale-down");
-        userPfpIm.setAttribute("src","")
-
-        // A mensagem em si
-        userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
-        userMessageDiv.textContent(userInput);
-      };
-
-      // TODO
-      function generateAssistantResponse() {
-
-      };
-
-      // Funcionalidade 'Limpar campos' 
-      function resetFields() {
-        growDiv();
-        disciplinaInput.value = "";
-        cursoInput.value = "";
-        promptObj.innerText = "";
-        promptObj.classList.add("hidden")
-        copyBtn.classList.add("hidden");
-      };
-
-      function growDiv() {
-        var growDiv = document.getElementById('grow');
-        if (growDiv.clientHeight) {
-          growDiv.style.height = 0;
-        } else {
-          // <!-- ! ATENÇÃO: MODIFICAR O OUTPUT PRA OU SER UMA DIV CONTAINER, OU SER OUTRA COISA -->
-          var wrapper = document.getElementById('output');
-          growDiv.style.height = wrapper.clientHeight + "px";
-        }
-      };
-
-      // Funcionalidade 'Copiar o conteúdo'
-      function copyToClipboard() {
-        var element = promptObj;
-        // Seleciona o texto no elemento de saída
-        var range = document.createRange();
-        range.selectNode(element);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        
-        // Copia o texto para a área de transferência
-        document.execCommand("copy");
-
-        // Alerta ou feedback que o texto foi copiado (opcional)
-        alert("Texto copiado: " + element.innerText);
+        growDiv();  //TODO
       }
+    };
 
-      // <!-- ! ====================================== -->
-      // <!-- ! script interagindo com a api da openAI -->
-      // <!-- ! ====================================== -->
-      import {config} from "dotenv"
-      config()
+    // Gera o prompt do usuário na página
+    function generateUserMessage(userInput) {
+      parentDiv = document.getElementById('output');
+      userMessageDiv = document.createElement('div');
+      userPfpWrapper = document.createElement('div');
+      userPfpImg = document.createElement('img');
+      userTextDiv = document.createElement('div');
 
-      import OpenAI from "openai"
-      const openai = new OpenAI({
-        apiKey: process.env.API_KEY,
-      });
+      // Coloca a div gerada como filha da "output"
+      parentDiv.appendChild(userMessageDiv);
 
-      // <!-- * Inicializar o assistente quando a página carregar -->
-      var returnObj = await initializeAssistant();
-      const assistant = returnObj.assistant;
-      const thread = returnObj.thread;
+      // Wrapper da mensagem do usuário
+      userMessageDiv.setAttribute("id", "last");
+      userMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-end");
+      userMessageDiv.appendChild(userPfpWrapper);
+      userMessageDiv.appendChild(userTextDiv);
 
-      // acho que isso funciona? n manjo mt de JS 🍵
-      async function askQuestion(question) {
-        return new Promise((resolve, reject) => {
-          (answer) => resolve(answer);
-        })
+      // Wrapper do redondo da pfp
+      userPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
+      userPfpWrapper.appendChild(userPfpImg);
+
+      // A imagem em si
+      userPfpImg.classList.add("object-scale-down");
+      userPfpIm.setAttribute("src", "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+
+      // A mensagem em si
+      userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
+      userMessageDiv.textContent(userInput);
+    };
+
+    // Gera a resposta do GPT na página
+    function generateAssistantResponse(gptOutput) {
+      parentDiv = document.getElementById('output');
+      assistantMessageDiv = document.createElement('div');
+      assistantPfpWrapper = document.createElement('div');
+      assistantPfpImg = document.createElement('img');
+      assistantTextDiv = document.createElement('div');
+
+      // Coloca a div gerada como filha da "output"
+      parentDiv.appendChild(userMessageDiv);
+
+      // Wrapper da mensagem do GPT
+      assistantMessageDiv.setAttribute("id", "last");
+      assistantMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-start");
+      assistantMessageDiv.appendChild(assistantPfpWrapper);
+      assistantMessageDiv.appendChild(assistantTextDiv);
+
+      // Wrapper do redondo da pfp
+      assistantPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
+      assistantPfpWrapper.appendChild(assistantPfpImg);
+
+      // A imagem em si
+      assistantPfpImg.classList.add("object-scale-down");
+      assistantPfpImg.setAttribute("src", "https://static.vecteezy.com/ti/vetor-gratis/p3/21059827-chatgpt-logotipo-bate-papo-gpt-icone-em-branco-fundo-gratis-vetor.jpg")
+
+      // A mensagem em si
+      userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
+      userMessageDiv.textContent(gptOutput);
+    };
+
+    // Funcionalidade 'Limpar campos' 
+    function resetFields() {
+      growDiv();
+      disciplinaInput.value = "";
+      cursoInput.value = "";
+      promptObj.innerText = "";
+      promptObj.classList.add("hidden")
+      copyBtn.classList.add("hidden");
+    };
+
+    function growDiv() {
+      var growDiv = document.getElementById('grow');
+      if (growDiv.clientHeight) {
+        growDiv.style.height = 0;
+      } else {
+        // <!-- ! ATENÇÃO: MODIFICAR O OUTPUT PRA OU SER UMA DIV CONTAINER, OU SER OUTRA COISA -->
+        var wrapper = document.getElementById('output');
+        growDiv.style.height = wrapper.clientHeight + "px";
       }
+    };
 
-      // Inicializa o assistente (para assistant e thread serem globais no escopo da página)
-      async function initializeAssistant() {
-        try {
-          // Criar o asssitente
-          const _assistant = await openai.beta.assistants.create({
-            name: "Assistente para professores",
-            instructions: "Você faz o papel de um assistente para professores. Use dados reais e fontes com credibilidade.",
-            model: "gpt-3.5-turbo"
-          });
+    // Funcionalidade 'Copiar o conteúdo'
+    function copyToClipboard() {
+      var element = promptObj;
+      // Seleciona o texto no elemento de saída
+      var range = document.createRange();
+      range.selectNode(element);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
 
-          // Criar thread de trabalho
-          const _thread = await openai.beta.threads.create();
-        } catch (error) {
-          console.log(error);
-        } finally {
-          return {assistant: _assistant, thread: _thread}
-        }
-      }
+      // Copia o texto para a área de transferência
+      document.execCommand("copy");
 
-      // Comunicação com o chat. Recebe a pergunta, e retorna a resposta.
-      async function interaction(textInput) {
-        try {
-          // A pergunta é recebida pela função, vinda da página web
-          const userQuestion = textInput;
+      // Alerta ou feedback que o texto foi copiado (opcional)
+      alert("Texto copiado: " + element.innerText);
+    }
 
-          await openai.beta.threads.messages.create(thread.id, {
-            role: "user",
-            content: userQuestion,
-          });
 
-          // Com 'runs', esperar e recuperar a resposta do assistente
-          const run = await openai.beta.threads.runs.create(thread.id, {
-            assistant_id: assistant.id,
-          });
+  </script>
+</body>
 
-          let runStatus = await openai.beta.threads.runs.retrieve(
-            thread.id,
-            run.id
-          );
-
-          // Checagem até que runStatus esteja completo
-          while (runStatus.status !== "completed") {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-          }
-
-          // Obter a última mensagem do assistente
-          const messages = await openai.beta.threads.messages.list(thread.id);
-
-          // Encontrar a última mensagem da 'run' atual
-          const lastMessageForRun = messages.data.filter(
-            (message) => message.run_id === run.id && message.role === "assistant"
-          ).pop();
-
-          // Encontrando uma mensagem do assistente, retornar o conteúdo
-          if (lastMessageForRun) {
-            return lastMessageForRun.content[0].text.value;
-          }
-          
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    </script>
-  </body>
 </html>
