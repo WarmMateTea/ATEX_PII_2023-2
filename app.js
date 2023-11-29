@@ -14,8 +14,8 @@ const openai = new OpenAI({
 
 // <!-- * Inicializar o assistente quando a página carregar -->
 var returnObj = initializeAssistant();
-const assistant = returnObj.assistant;
-const thread = returnObj.thread;
+// const assistant = returnObj.assistant;  
+// const thread = returnObj.thread;
 
 
 
@@ -44,11 +44,12 @@ app.get("/", (req, res) => {
 });
 
 app.post("/processString", (req, res) => {
-  console.log(req.body);
-  let result = interaction(req.body.baseStrOut)
-  .then(() => {
-    console.log(result);
-  });
+  // console.log(req.body);
+  let result = await interaction(req.body.baseStrOut);
+
+  
+  // result.then(() => {
+  // })
   
 
   res.json({ result: result });

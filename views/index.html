@@ -38,23 +38,6 @@
           3. Clique em Gerar para gerar o prompt<br><br>
         </span>
 
-        <div class="hidden">
-          <button class="min-w-full mb-2 space-x-1 bg-slate-100 p-2 rounded-md text-slate-600 font-semibold">Opções
-            Avançadas</button>
-          <div id="opcoesAvancadas" class=" flex flex-col p-4 rounded-sm bg-slate-200">
-            <div>Número de referências<input id="qtdReferencias" type="number"></div>
-            <button class="px-4 py-2 text-slate-700 bg-slate-100" id="perguntasButton">Questões</button>
-            <div id="perguntasSection">
-              Quantidade de perguntas: <input type="number">
-              Tipo de perguntas:
-              <input type="checkbox">Dissertativas
-              <input type="checkbox">Múltipla Escolha
-              <input type="checkbox">Verdadeiro ou Falso
-            </div>
-
-          </div>
-        </div>
-
 
         <!-- field & label container -->
         <div class="flex flex-row space-x-1 mb-3 ">
@@ -78,35 +61,7 @@
         </div>
 
         <!-- * Contêiner das interações [usuário <-> GPT] -->
-        <div id="output" class="flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF]">
-
-          <!-- ^ Contêiner do dialog do usuário  -->
-          <div class="min-w-max flex flex-col items-end">
-            <!-- & img redondinha do usuário-->
-            <div class="rounded-full w-10 h-10 mb-2 bg-red-700">
-              <img class="object-scale-down" src="">
-            </div>
-            <!-- ? aqui vai o texto :D -->
-            <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
-              <p>
-
-              </p>
-            </div>
-          </div>
-
-          <!-- ^ Contêiner das respostas do GPT  -->
-          <div class="min-w-max flex flex-col items-start">
-            <!-- & img redondinha do gpt-->
-            <div class="rounded-full w-10 h-10 mb-2">
-              <img class="object-scale-down" src="">
-            </div>
-            <!-- ? aqui vai o texto :D -->
-            <div class="w-9/12 px-4 py-2 bg-[#252531] text-white font-medium rounded-md">
-              <p>
-
-              </p>
-            </div>
-          </div>
+        <div id="output" class="hidden flex flex-col min-w-max h-fit rounded-md px-4 py-2 bg-[#EAEBEF]">
 
           <!-- ! aqui tem que ficar a parte de interação pré-programada. como fazer???????????????????????????????????????????/ freire ajuda um infeliz pf -->
           <div>
@@ -189,6 +144,11 @@
         baseStrOut = baseStr.replace("[disciplina]", disciplinaStr);
         baseStrOut = baseStrOut.replace("[curso]", cursoStr);
 
+        document.getElementById('output').classList.remove("hidden");
+
+        //generateUserMessage(baseStrOut);
+        generateOutputDiv(baseStrOut);
+
         // <!-- * Comunicação mesmo tá aqui -->
         response = await fetch("/processString", {
           method: "POST",
@@ -198,50 +158,65 @@
           },
         });
 
+        console.log(response);
+
+
+        const responseData = await result;
+
         // <!-- * Parte visual -->
-        generateUserMessage(baseStrOut);
-        generateAssistantResponse(response);
+        
+        console.log(baseStrOut);
+        
+        //generateAssistantResponse(response);
+        generateOutputDiv(responseData);
+        console.log(response);
+        console.log("==============================");
 
         growDiv();  //TODO
       }
     };
 
-    // Gera o prompt do usuário na página
-    function generateUserMessage(userInput) {
-      parentDiv = document.getElementById('output');
-      userMessageDiv = document.createElement('div');
-      userPfpWrapper = document.createElement('div');
-      userPfpImg = document.createElement('img');
-      userTextDiv = document.createElement('div');
+    function generateOutputDiv(inputText) {
+  // Encontrar o elemento pai com o ID "output"
+  const parentDiv = document.getElementById('output');
 
-      // Coloca a div gerada como filha da "output"
-      parentDiv.appendChild(userMessageDiv);
+  // Criar uma nova div
+  const newDiv = document.createElement('div');
 
-      // Wrapper da mensagem do usuário
-      userMessageDiv.setAttribute("id", "last");
-      userMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-end");
-      userMessageDiv.appendChild(userPfpWrapper);
-      userMessageDiv.appendChild(userTextDiv);
+  // Adicionar conteúdo à nova div
+  newDiv.textContent = inputText;
 
-      // Wrapper do redondo da pfp
-      userPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
-      userPfpWrapper.appendChild(userPfpImg);
+  // Adicionar a nova div como filho do elemento pai
+  parentDiv.appendChild(newDiv);
+}
 
-      // A imagem em si
-      userPfpImg.classList.add("object-scale-down");
-      userPfpIm.setAttribute("src", "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+  function generateUserMessage(userInput) {
+  parentDiv = document.getElementById('output');
+  userMessageDiv = document.createElement('div');
+  userTextDiv = document.createElement('div');
 
-      // A mensagem em si
-      userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
-      userMessageDiv.textContent(userInput);
-    };
+  // Coloca a div gerada como filha da "output"
+  parentDiv.appendChild(userMessageDiv);
+
+  // Configuração da mensagem do usuário
+  userMessageDiv.setAttribute("id", "last");
+  userMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-end");
+
+  // A mensagem em si
+  userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
+  userMessageDiv.textContent = userInput;
+
+  // Adiciona o elemento de texto à div do usuário
+  userMessageDiv.appendChild(userTextDiv);
+
+};
 
     // Gera a resposta do GPT na página
     function generateAssistantResponse(gptOutput) {
       parentDiv = document.getElementById('output');
       assistantMessageDiv = document.createElement('div');
-      assistantPfpWrapper = document.createElement('div');
-      assistantPfpImg = document.createElement('img');
+      //assistantPfpWrapper = document.createElement('div');
+      //assistantPfpImg = document.createElement('img');
       assistantTextDiv = document.createElement('div');
 
       // Coloca a div gerada como filha da "output"
@@ -250,20 +225,12 @@
       // Wrapper da mensagem do GPT
       assistantMessageDiv.setAttribute("id", "last");
       assistantMessageDiv.classList.add("min-w-max", "flex", "flex-col", "items-start");
-      assistantMessageDiv.appendChild(assistantPfpWrapper);
+      //assistantMessageDiv.appendChild(assistantPfpWrapper);
       assistantMessageDiv.appendChild(assistantTextDiv);
-
-      // Wrapper do redondo da pfp
-      assistantPfpWrapper.classList.add("rounded-full", "w-10", "h-10", "mb-2", "bg-red-700");
-      assistantPfpWrapper.appendChild(assistantPfpImg);
-
-      // A imagem em si
-      assistantPfpImg.classList.add("object-scale-down");
-      assistantPfpImg.setAttribute("src", "https://static.vecteezy.com/ti/vetor-gratis/p3/21059827-chatgpt-logotipo-bate-papo-gpt-icone-em-branco-fundo-gratis-vetor.jpg")
 
       // A mensagem em si
       userMessageDiv.classList.add("w-9/12", "px-4", "py-2", "bg-[#252531]", "text-white", "font-medium", "rounded-md");
-      userMessageDiv.textContent(gptOutput);
+      userMessageDiv.textContent = gptOutput;
     };
 
     // Funcionalidade 'Limpar campos' 
