@@ -11,59 +11,59 @@ const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
 
-
 // <!-- * Inicializar o assistente quando a página carregar -->
-var returnObj = initializeAssistant();
-// const assistant = returnObj.assistant;  
+var returnObj = initializeAssistant().then((obj) => obj);
+// const assistant = returnObj.assistant;
 // const thread = returnObj.thread;
-
-
-
-
 
 const app = express();
 app.use(bodyParser.json());
 
-app.use(
-  "/css",
-  express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))
-);
-app.use(
-  "/js",
-  express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))
-);
-app.use(
-  "/js",
-  express.static(path.join(__dirname, "node_modules/jquery/dist"))
-);
+// app.use(
+//   "/css",
+//   express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))
+// );
+// app.use(
+//   "/js",
+//   express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))
+// );
+// app.use(
+//   "/js",
+//   express.static(path.join(__dirname, "node_modules/jquery/dist"))
+// );
 
 app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/index.html"));
-});
-
-app.post("/processString", (req, res) => {
-  // console.log(req.body);
-  let result = await interaction(req.body.baseStrOut);
-
-  
-  // result.then(() => {
-  // })
-  
-
-  res.json({ result: result });
-});
 
 app.listen(5000, () => {
   console.log("Listening on port " + 5000);
 });
 
+app.get("/", (req, res) => {
+  console.log("Sending index file");
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  console.log("Finished sending index!");
+});
+
+app.post("/processString", (req, res) => {
+  // console.log(req.body);
+  (async () => {
+    try {
+      //let result = await interaction(req.body.baseStrOut);
+      let result = await new Promise((resolve, reject) => {
+        setTimeout(() => resolve("HAS THIS WORKED NOW?"), 2500);
+      });
+      console.log(`Result: ${result}`);
+      res.json({ result: result });
+    } catch (err) {
+      console.log(`Error: ${err}`);
+      res.json({ error: err });
+    }
+  })(); // <- Esse treco aí é uma IIFE; a ideia é usar código async como se fosse síncrono.. jesus cristo. .then() é mais intuitivo ahgdfsadg
+});
+
 // <!-- ! ====================================== -->
 // <!-- ! script interagindo com a api da openAI -->
 // <!-- ! ====================================== -->
-
-
 
 // acho que isso funciona? n manjo mt de JS 🍵
 async function askQuestion(question) {
@@ -78,10 +78,10 @@ async function initializeAssistant() {
   try {
     // Criar o asssitente
     _assistant = await openai.beta.assistants.create({
-        name: "Assistente para professores",
-        instructions:
-          "Você faz o papel de um assistente para professores. Use dados reais e fontes com credibilidade.",
-        model: "gpt-3.5-turbo",
+      name: "Assistente para professores",
+      instructions:
+        "Você faz o papel de um assistente para professores. Use dados reais e fontes com credibilidade.",
+      model: "gpt-3.5-turbo",
     });
 
     // Criar thread de trabalho
